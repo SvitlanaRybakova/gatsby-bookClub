@@ -1,29 +1,62 @@
 import * as React from "react"
-import { Link } from "gatsby"
-import { StaticImage } from "gatsby-plugin-image"
-
+import { Link, graphql } from "gatsby"
 import Layout from "../components/layout"
-import Seo from "../components/seo"
+import BookItem from "../components/BookItem"
+import styled from 'styled-components'
 
-const IndexPage = () => (
-  <Layout>
-    <Seo title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <StaticImage
-      src="../images/gatsby-astronaut.png"
-      width={300}
-      quality={95}
-      formats={["AUTO", "WEBP", "AVIF"]}
-      alt="A Gatsby astronaut"
-      style={{ marginBottom: `1.45rem` }}
-    />
-    <p>
-      <Link to="/page-2/">Go to page 2</Link> <br />
-      <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-    </p>
-  </Layout>
-)
+const LinkButton = styled.div`
+text-align: right;
+
+a{
+  padding: 8px;
+  background: rebeccapurple;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+
+  &:hover{
+    background: indigo;
+  }
+}
+`;
+
+const IndexPage = ({ data }) => {
+  console.log(data.allBook.edges)
+
+  return (
+    <Layout>
+      {data.allBook.edges.map(elem => (
+        <BookItem
+          authorName={elem.node.author.name}
+          bookSummary={elem.node.summary}
+          bookTitle={elem.node.title}
+          key={elem.node.id}
+        >
+          <LinkButton>
+            <Link to={`/book/${elem.node.id}`}>Join conversation</Link>
+          </LinkButton>
+        </BookItem>
+      ))}
+      //{" "}
+    </Layout>
+  )
+}
 
 export default IndexPage
+
+export const query = graphql`
+  query MyQuery {
+    allBook {
+      edges {
+        node {
+          summary
+          title
+          id
+          author {
+            name
+          }
+        }
+      }
+    }
+  }
+`
