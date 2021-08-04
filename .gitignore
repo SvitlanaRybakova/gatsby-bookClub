@@ -126,3 +126,6 @@ dist
 .cache/
 firebase.json
 yarn.lock
+
+# firebase
+src/components/Firebase/config.js

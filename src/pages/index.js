@@ -23,6 +23,7 @@ const LinkButton = styled.div`
 const IndexPage = ({ data }) => {
   return (
     <Layout>
+      <h1>IndexPage</h1>
       {data.allBook.edges.map((elem) => {
           return (
             <BookItem

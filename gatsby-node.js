@@ -1,5 +1,23 @@
 const path = require('path');
 
+// extra config to firebase work
+exports.onCreateWebpackConfig = ({ actions, stage }) => {
+  if (stage === "develop-html" || stage === "build-html") {
+    actions.setWebpackConfig({
+      resolve: {
+        mainFields: ["main"],
+      },
+    })
+  } else {
+    actions.setWebpackConfig({
+      resolve: {
+        mainFields: ["browser", "module", "main"],
+      },
+    })
+  }
+}
+
+// create dynamicly Book item pages
 exports.createPages = ({ graphql, actions}) => {
   const {createPage} = actions;
   const bookTemplate = path.resolve('src/templates/bookTemplate.js')
@@ -9,20 +27,8 @@ exports.createPages = ({ graphql, actions}) => {
     allBook {
       edges {
         node {
-          summary
-          title
           id
-          localImage {
-            childImageSharp {
-              fixed(width: 200) {
-                src
-              }
-            }
           }
-          author {
-            name
-          }
-        }
       }
     }
   }
@@ -37,7 +43,7 @@ exports.createPages = ({ graphql, actions}) => {
       createPage({
         path: `/book/${book.node.id}`,
         component: bookTemplate,
-        context: book.node
+        context: {bookId: book.node.id}
       })
     })
   })
