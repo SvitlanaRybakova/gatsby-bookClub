@@ -59929,7 +59929,10 @@ const HeaderWrapper = styled_components__WEBPACK_IMPORTED_MODULE_4__.default.hea
 })(["background:rebeccapurple;margin-bottom:1.45rem;"]);
 const HeaderContent = styled_components__WEBPACK_IMPORTED_MODULE_4__.default.div.withConfig({
   displayName: "header__HeaderContent"
-})(["margin:0 auto;max-width:960;padding:1.45rem 1.0875rem;display:flex;justify-content:space-between;align-items:baseline;>h1{margin:0;flex-grow:1;>a{color:white;text-decoration:none;}>div{display:flex;color:white;}}"]);
+})(["margin:0 auto;max-width:960;padding:1.45rem 1.0875rem;display:flex;justify-content:space-between;align-items:baseline;> h1{margin:0;flex-grow:1;> a{color:white;text-decoration:none;}> div{display:flex;color:white;}}"]);
+const Divider = styled_components__WEBPACK_IMPORTED_MODULE_4__.default.span.withConfig({
+  displayName: "header__Divider"
+})(["margin:0 8px;padding-right:1px;background:#ddd;"]);
 
 const Header = ({
   siteTitle
@@ -59951,13 +59954,19 @@ const Header = ({
     }
   }, "Hello, ", user.email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LogoutLink, {
     onClick: handleLogoutClick
-  }, "Logout")), (!user || !user.email) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(gatsby__WEBPACK_IMPORTED_MODULE_2__.Link, {
+  }, "Logout")), (!user || !user.email) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(gatsby__WEBPACK_IMPORTED_MODULE_2__.Link, {
     to: "/login",
     style: {
       color: "white",
       textDecoration: "none"
     }
-  }, "Login"))));
+  }, "Login"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Divider, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(gatsby__WEBPACK_IMPORTED_MODULE_2__.Link, {
+    to: "/register",
+    style: {
+      color: "white",
+      textDecoration: "none"
+    }
+  }, "Register")))));
 };
 
 Header.propTypes = {
