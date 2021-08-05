@@ -37,7 +37,6 @@ const BookItem = ({
   bookCover,
   children,
 }) => {
-  console.log(bookCover);
   return (
     <BookItemWrapper>
 

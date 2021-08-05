@@ -1,20 +1,19 @@
 // this component renders on separate Book item page from BE data(gatsby-node)
 import React from "react";
-import Layout from "../components/layout";
 import BookItem from "../components/BookItem";
 import { graphql } from "gatsby";
 
 const BookTemplate = (props) => {
-  console.log(props.data);
+  // console.log(props.data);
   return (
-    <Layout>
+    <section>
       <BookItem
         authorName={props.data.book.author.name}
         bookSummary={props.data.book.summary}
         bookTitle={props.data.book.title}
         bookCover={props.data.book.localImage.childImageSharp.fixed}
       />
-    </Layout>
+    </section>
   );
 };
 
