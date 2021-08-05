@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Input, Form, Button } from "../components/common";
+import { FirebaseContext } from "../components/Firebase";
 
 const Register = () => {
+  const {firebase} = useContext(FirebaseContext);
+ 
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -18,6 +21,12 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if(formValues.password === formValues.confirmPassword){
+      firebase.register({email: formValues.email, password: formValues.password});
+    }else{
+      alert('password not matches')
+    }
   };
 
   return (
