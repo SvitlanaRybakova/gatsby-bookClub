@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Input, Form, Button, ErrorMessage } from "../components/common";
 import { FirebaseContext } from "../components/Firebase";
+import { Link } from "gatsby";
 
 const Register = () => {
   // instanse of Firebase
@@ -13,6 +14,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    username: "",
   });
 
   const handlerInputChange = (e) => {
@@ -29,11 +31,15 @@ const Register = () => {
 
     if (formValues.password === formValues.confirmPassword) {
       firebase
-        .register({ email: formValues.email, password: formValues.password })
+        .register({ 
+          username: formValues.username,
+          email: formValues.email, 
+          password: formValues.password })
         .catch((error) => {
           console.log(error);
           setErrorMessage(error.message);
         });
+
     }else{
       setErrorMessage('Password and Confirm Pasword fields must match');
     }
@@ -41,6 +47,14 @@ const Register = () => {
 
   return (
     <Form onSubmit={handleSubmit}>
+        <Input
+        name="username"
+        value={formValues.username}
+        placeholder="username"
+        type="text"
+        required
+        onChange={handlerInputChange}
+      />
       <Input
         name="email"
         value={formValues.email}

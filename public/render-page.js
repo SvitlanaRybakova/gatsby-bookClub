@@ -59713,6 +59713,23 @@ class Firebase {
     }
   }
 
+  async getUserProfile({
+    userId
+  }) {
+    return this.db.collection('publicProfiles').where('userId', '==', userId).get();
+  }
+
+  async register({
+    email,
+    password,
+    username
+  }) {
+    const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
+    return this.db.collection('publicProfiles').doc(username).set({
+      userId: newUser.user.uid
+    });
+  }
+
   async login({
     email,
     password
@@ -59834,42 +59851,49 @@ function useAuth() {
       setFirebase(firebaseInstance);
       unsubscribe = firebaseInstance.auth.onAuthStateChanged(userResult => {
         if (userResult) {
-          setUser(userResult); // get user custom claims
+          firebaseInstance.getUserProfile({
+            userId: userResult.uid
+          }).then(result => {
+            //   add the extra property(name from db) to user obj
+            setUser({ ...userResult,
+              username: result.empty ? null : result.docs[0].id
+            });
+          }); // get user custom claims
 
           /*setLoading(true);
-          Promise.all([
-              firebaseInstance.getUserProfile({ userId: userResult.uid }),
-              firebaseInstance.auth.currentUser.getIdTokenResult(true),
-          ]).then((result) => {
-              const publicProfileResult = result[0]
-              const token = result[1]
-               if (publicProfileResult.empty) {
-                  publicProfileUnsubscribe = firebaseInstance.db
-                    .collection("publicProfiles")
-                    .where("userId", "==", userResult.uid)
-                    .onSnapshot((snapshot) => {
-                        const publicProfileDoc = snapshot.docs[0]
-                        if (publicProfileDoc && publicProfileDoc.id) {
-                            setUser({
-                                ...userResult,
-                                admin: token.claims.admin,
-                                username: publicProfileDoc.id,
-                            })
+                    Promise.all([
+                        firebaseInstance.getUserProfile({ userId: userResult.uid }),
+                        firebaseInstance.auth.currentUser.getIdTokenResult(true),
+                    ]).then((result) => {
+                        const publicProfileResult = result[0]
+                        const token = result[1]
+                         if (publicProfileResult.empty) {
+                            publicProfileUnsubscribe = firebaseInstance.db
+                              .collection("publicProfiles")
+                              .where("userId", "==", userResult.uid)
+                              .onSnapshot((snapshot) => {
+                                  const publicProfileDoc = snapshot.docs[0]
+                                  if (publicProfileDoc && publicProfileDoc.id) {
+                                      setUser({
+                                          ...userResult,
+                                          admin: token.claims.admin,
+                                          username: publicProfileDoc.id,
+                                      })
+                                  }
+                                   setLoading(false)
+                              })
+                        } else {
+                            const publicProfileDoc = publicProfileResult.docs[0]
+                            if (publicProfileDoc && publicProfileDoc.id) {
+                                setUser({
+                                    ...userResult,
+                                    admin: token.claims.admin,
+                                    username: publicProfileDoc.id,
+                                })
+                            }
+                             setLoading(false)
                         }
-                         setLoading(false)
-                    })
-              } else {
-                  const publicProfileDoc = publicProfileResult.docs[0]
-                  if (publicProfileDoc && publicProfileDoc.id) {
-                      setUser({
-                          ...userResult,
-                          admin: token.claims.admin,
-                          username: publicProfileDoc.id,
-                      })
-                  }
-                   setLoading(false)
-              }
-          })*/
+                    })*/
         } else {
           setUser(null);
         }
@@ -59941,6 +59965,7 @@ const Header = ({
     firebase,
     user
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_Firebase__WEBPACK_IMPORTED_MODULE_3__.FirebaseContext);
+  console.log("user", user);
 
   const handleLogoutClick = () => {
     firebase.logout().then(() => (0,gatsby__WEBPACK_IMPORTED_MODULE_2__.navigate)("/login"));
@@ -59950,9 +59975,10 @@ const Header = ({
     to: "/"
   }, siteTitle)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, !!user && !!user.email && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
-      marginRight: "20px"
+      marginRight: "20px",
+      color: "white"
     }
-  }, "Hello, ", user.email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LogoutLink, {
+  }, "Hello, ", user.username || user.email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LogoutLink, {
     onClick: handleLogoutClick
   }, "Logout")), (!user || !user.email) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(gatsby__WEBPACK_IMPORTED_MODULE_2__.Link, {
     to: "/login",

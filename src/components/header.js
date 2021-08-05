@@ -50,7 +50,7 @@ background: #ddd;
 
 const Header = ({ siteTitle }) => {
   const { firebase, user } = useContext(FirebaseContext);
-
+console.log("user", user);
   const handleLogoutClick = () => {
     firebase.logout().then(() => navigate("/login"));
   };
@@ -64,7 +64,7 @@ const Header = ({ siteTitle }) => {
         <div>
           {!!user && !!user.email && (
             <>
-              <div style={{ marginRight: "20px" }}>Hello, {user.email}</div>
+              <div style={{ marginRight: "20px", color: "white" }}>Hello, {user.username || user.email}</div>
               <LogoutLink onClick={handleLogoutClick}>Logout</LogoutLink>
             </>
           )}
