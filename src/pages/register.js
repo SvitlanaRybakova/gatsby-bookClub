@@ -1,10 +1,14 @@
 import React, { useState, useContext } from "react";
-import { Input, Form, Button } from "../components/common";
+import { Input, Form, Button, ErrorMessage } from "../components/common";
 import { FirebaseContext } from "../components/Firebase";
 
 const Register = () => {
-  const {firebase} = useContext(FirebaseContext);
- 
+  // instanse of Firebase
+  const { firebase } = useContext(FirebaseContext);
+
+  // validation
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -13,6 +17,7 @@ const Register = () => {
 
   const handlerInputChange = (e) => {
     e.persist();
+    setErrorMessage("");
     setFormValues((currentValues) => ({
       ...currentValues,
       [e.target.name]: e.target.value,
@@ -22,10 +27,15 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(formValues.password === formValues.confirmPassword){
-      firebase.register({email: formValues.email, password: formValues.password});
+    if (formValues.password === formValues.confirmPassword) {
+      firebase
+        .register({ email: formValues.email, password: formValues.password })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessage(error.message);
+        });
     }else{
-      alert('password not matches')
+      setErrorMessage('Password and Confirm Pasword fields must match');
     }
   };
 
@@ -45,7 +55,7 @@ const Register = () => {
         placeholder="password"
         type="password"
         required
-        minLength={3}
+        minLength={6}
         onChange={handlerInputChange}
       />
       <Input
@@ -54,9 +64,11 @@ const Register = () => {
         placeholder="confirm password"
         type="password"
         required
-        minLength={3}
+        minLength={6}
         onChange={handlerInputChange}
       />
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
       <Button type="submit" block>
         Register
       </Button>
