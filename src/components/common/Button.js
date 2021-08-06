@@ -8,6 +8,7 @@ color: white;
 font-size: 20px;
 border-radius: 4px;
 cursor: pointer;
+white-space: nowrap;
 ${props => props.block ? 'width: 100%; display: block;' : ''}
 
 &:hover{

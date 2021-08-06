@@ -59730,6 +59730,16 @@ class Firebase {
     });
   }
 
+  async subscribeToBookCommens({
+    bookId
+  }) {
+    // reference to particulary book
+    const bookRef = this.db.collection('books').doc(bookId);
+    return this.db.collection('comments').where('book', '==', bookRef).onSnapshot(s => {
+      console.log('snabshot', s);
+    });
+  }
+
   async login({
     email,
     password

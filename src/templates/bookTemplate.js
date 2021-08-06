@@ -1,10 +1,15 @@
 // this component renders on separate Book item page from BE data(gatsby-node)
-import React from "react";
-import BookItem from "../components/BookItem";
+import React, { useContext } from "react";
 import { graphql } from "gatsby";
+
+import BookItem from "../components/BookItem";
+import {BookComments} from "../components/common";
+import { FirebaseContext } from "../components/Firebase";
 
 const BookTemplate = (props) => {
   // console.log(props.data);
+  const { firebase } = useContext(FirebaseContext);
+
   return (
     <section>
       <BookItem
@@ -13,13 +18,16 @@ const BookTemplate = (props) => {
         bookTitle={props.data.book.title}
         bookCover={props.data.book.localImage.childImageSharp.fixed}
       />
+      {firebase && (
+        <BookComments firebase={firebase} bookId={props.data.book.id} />
+      )}
     </section>
   );
 };
 
 export const query = graphql`
   query BookQuery($bookId: String!) {
-    book(id: {eq: $bookId}){
+    book(id: { eq: $bookId }) {
       summary
       title
       id
@@ -27,7 +35,7 @@ export const query = graphql`
         childImageSharp {
           fixed(width: 200) {
             ...GatsbyImageSharpFixed
-            }
+          }
         }
       }
       author {
