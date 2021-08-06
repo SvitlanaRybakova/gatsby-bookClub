@@ -42,6 +42,7 @@ class Firebase {
     return this.db
       .collection("comments")
       .where("book", "==", bookRef)
+      .orderBy('dateCreated', 'desc')
       .onSnapshot(onSnapshot);
   }
 
@@ -52,6 +53,14 @@ class Firebase {
   async logout() {
     await this.auth.signOut();
   }
+
+  async postComment({text, bookId}){
+    const postCommentCallable = this.functions.httpsCallable('postComment');
+    return postCommentCallable({
+        text,
+        bookId
+    })
+}
 }
 
 let firebaseInstance;
@@ -66,5 +75,7 @@ function getFirebaseInstance() {
     return null;
   }
 }
+
+
 
 export default getFirebaseInstance;

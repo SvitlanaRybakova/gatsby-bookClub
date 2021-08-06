@@ -59716,7 +59716,7 @@ class Firebase {
   async getUserProfile({
     userId
   }) {
-    return this.db.collection('publicProfiles').where('userId', '==', userId).get();
+    return this.db.collection("publicProfiles").where("userId", "==", userId).get();
   }
 
   async register({
@@ -59725,19 +59725,19 @@ class Firebase {
     username
   }) {
     const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
-    return this.db.collection('publicProfiles').doc(username).set({
+    return this.db.collection("publicProfiles").doc(username).set({
       userId: newUser.user.uid
     });
-  }
+  } //   func realtime update, run anytime when query( .where("book", "==", bookRef) returns a new data)
 
-  async subscribeToBookCommens({
-    bookId
+
+  subscribeToBookCommens({
+    bookId,
+    onSnapshot
   }) {
     // reference to particulary book
-    const bookRef = this.db.collection('books').doc(bookId);
-    return this.db.collection('comments').where('book', '==', bookRef).onSnapshot(s => {
-      console.log('snabshot', s);
-    });
+    const bookRef = this.db.collection("books").doc(bookId);
+    return this.db.collection("comments").where("book", "==", bookRef).onSnapshot(onSnapshot);
   }
 
   async login({
@@ -59764,6 +59764,17 @@ function getFirebaseInstance() {
   } else {
     return null;
   }
+}
+
+async function postComment({
+  text,
+  bookId
+}) {
+  const postCommentCallable = this.functions.httpsCallable('postComment');
+  return postCommentCallable({
+    text,
+    bookId
+  });
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (getFirebaseInstance);
